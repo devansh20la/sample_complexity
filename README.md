@@ -19,7 +19,7 @@ tensorboard (for logging metrics)
 tqdm (for pretty progress bars)
 ```
 
-## Training
+## (Step 2) Training (train_dnn/train_model)
 ```
 --ms: manual seed (eg 123)
 
@@ -60,7 +60,7 @@ python train.py --dtype="cifar10" --train_size=1.0 \
  	--lr=0.1 --bs=128 --print_freq=100 \
  	--n="cifar10_resnet18/cifar10_1.0/"
 ```
-## Running the tests
+## (Step 3) Testing (train_dnn/train_model)
 An example to test on cifar 10 test data on resnet 18 model is as follows:
 ```
 python test.py --dtype="cifar10" --modeltype="cifar_resnet18" \
@@ -68,7 +68,9 @@ python test.py --dtype="cifar10" --modeltype="cifar_resnet18" \
 ```
 The empirical learning curve data will saved in the folder "results/cifar10/"
 
-## Estimating the learning curve
+## (Step 4) Saving feature maps (train_dnn/train_model)
+
+## Estimating the learning curve (generate_learning_curve)
 
 
 ## Authors
