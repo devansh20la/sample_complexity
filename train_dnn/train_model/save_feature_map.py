@@ -6,6 +6,7 @@
 #
 # VERY IMPORTANT
 #
+#
 import torch
 import torch.nn as nn
 import os
@@ -26,8 +27,7 @@ def create_path(path):
         os.makedirs(path)
 
 def main(args):
-    path = "data/cifar10/"
-    hf = h5py.File(path + "{}_{}_feat.hdf5".format(args.dtype, args.mtype), 'w')
+    hf = h5py.File(args.data_dir + "{}_{}_feat.hdf5".format(args.dtype, args.mtype), 'w')
 
     for train_size in [0.03125, 0.0625, 0.125, 0.25, 0.5, 0.75, 1.0]:
 
@@ -35,22 +35,23 @@ def main(args):
         
         if args.dtype == "cifar10":
             if args.mtype == "cifar_resnet18":
-                args.cp_dir = os.path.join("checkpoints/cifar10_resnet18/cifar10_{}/run1/best_model.pth.tar".format(args.train_size))
+                args.cp_dir = "checkpoints/cifar10_resnet18/cifar10_{}/run0/best_model.pth.tar".format(args.train_size)
             elif args.mtype == "cifar_vgg16":
-                args.cp_dir = os.path.join("checkpoints/cifar10_vgg16/cifar10_{}/run1/best_model.pth.tar".format(args.train_size))
+                args.cp_dir = "checkpoints/cifar10_vgg16/cifar10_{}/run0/best_model.pth.tar".format(args.train_size)
+        
         elif args.dtype == "cifar100":
             if args.mtype == "cifar_resnet18":
-                args.cp_dir = os.path.join("checkpoints/cifar100_resnet18/cifar_{}/run0/best_model.pth.tar".format(args.train_size))
+                args.cp_dir = "checkpoints/cifar100_resnet18/cifar_{}/run0/best_model.pth.tar".format(args.train_size)
             elif args.mtype == "cifar_vgg16":
-                args.cp_dir = os.path.join("checkpoints/cifar100_vgg16/cifar100_{}/run0/best_model.pth.tar".format(args.train_size))
+                args.cp_dir = "checkpoints/cifar100_vgg16/cifar100_{}/run0/best_model.pth.tar".format(args.train_size)
+        
         elif args.dtype == "mnist":
             if args.mtype == "lenet":
-                args.cp_dir = os.path.join("checkpoints/mnist/lenet/6_16/mnist_{}/run0/best_model.pth.tar".format(args.train_size))
+                args.cp_dir = "checkpoints/mnist/lenet/mnist_{}/run0/best_model.pth.tar".format(args.train_size)
                 
-            if args.mtype == "fcnet":
-                args.cp_dir = os.path.join("checkpoints/mnist/fcnet/6_16/mnist_{}/run0/best_model.pth.tar".format(args.train_size))
         else:
             quit()
+            
         dset_loaders = tf.get_loader(args, training=True)
         print(args.train_size, len(dset_loaders['train'].dataset))
         model = tf.get_model(args)

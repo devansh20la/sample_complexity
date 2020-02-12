@@ -28,31 +28,31 @@ def get_args(*args):
     args = parser.parse_args(*args)
 
     args.dir = "."
-    args.cp_dir = "{}/checkpoints/{}/{}_{}".format(args.dir,args.dtype,args.mtype,args.train_size)
+    args.cp_dir = "{0}/checkpoints/{1}/{2}/{2}_{3}".format(args.dir, args.dtype, args.mtype, args.train_size)
     
     if args.dtype == 'cifar10':
         args.num_classes = 10
         args.milestones = [150, 250]
-        args.data_dir = os.path.join(args.dir, 'data', 'cifar')
+        args.data_dir = "{}/data/cifar/".format(args.dir)
 
     elif args.dtype == 'cifar100':
         args.num_classes = 100
         args.milestones = [150, 250]
-        args.data_dir = os.path.join(args.dir, 'data', 'cifar')
+        args.data_dir = "{}/data/cifar/".format(args.dir)
 
     elif args.dtype == 'imagenet':
         args.num_classes = 1000
         args.milestones = [30, 60, 90]
-        args.data_dir = os.path.join(args.dir, 'data', 'imagenet')
+        args.data_dir = "{}/data/imagenet/".format(args.dir)
 
     elif args.dtype == 'mnist':
         args.num_classes = 10
-        args.data_dir = os.path.join(args.dir, 'data', 'mnist')
+        args.data_dir = "{}/data/mnist/".format(args.dir)
 
     elif args.dtype == 'udacity':
         args.num_classes = None
         args.milestones = [70, 120, 150]
-        args.data_dir = os.path.join(args.dir, 'data', 'udacity')
+        args.data_dir = "{}/data/udacity/".format(args.dir)
 
     args.use_cuda = torch.cuda.is_available()
 
