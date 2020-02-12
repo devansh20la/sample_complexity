@@ -1,11 +1,3 @@
-#
-# VERY IMPORTANT
-#
-# MAKE SURE TO FIRST CHANGE THE MODEL FILE SO THAT IT OUTPUTS FEATURE MAPS
-# RATHER THAN THE CLASS LABELS
-#
-# VERY IMPORTANT
-#
 import torch
 import torch.nn as nn
 import os
@@ -18,7 +10,6 @@ from tqdm import tqdm
 import h5py
 import argparse
 from args import get_args
-from models import bottleneck
 
 
 def create_path(path):
@@ -36,7 +27,7 @@ def main(args):
     for train_size in train_size_list:
 
         args.train_size = train_size
-        args.cp_dir="{0}/checkpoints/{1}/{2}/{2}_{3}".format(args.dir, args.dtype, args.mtype, args.train_size)
+        args.cp_dir="{0}/run0/best_model.pth.tar".format(args.cp_dir)
 
         dset_loaders = tf.get_loader(args, training=True)
         model = tf.get_model(args)
@@ -47,10 +38,11 @@ def main(args):
         state = torch.load(args.cp_dir)
         model.load_state_dict(state['model'])
 
-        # classifier = list(model.classifier)
-        # classifier.pop()
-        # classifier.pop()
-        # model.classifier = nn.Sequential(*classifier)
+        if 'vgg' in args.mtype:
+            classifier = list(model.classifier)
+            classifier.pop()
+            classifier.pop()
+            model.classifier = nn.Sequential(*classifier)
 
         model.eval()
 
@@ -86,10 +78,16 @@ if __name__ == '__main__':
 
     if "resnet18" in args.mtype:
         args.feature_dim = 512
+
     elif "vgg16" in args.mtype:
         args.feature_dim = 4096
+
     elif "lenet" in args.mtype:
         args.feature_dim = 84
+        
+    if "resnet50" in args.mtype:
+        args.feature_dim = 2048
+
     else:
         quit()
         

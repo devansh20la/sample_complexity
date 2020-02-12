@@ -25,7 +25,6 @@ def get_delta(args):
     deltas = params[args.dtype][args.mtype]["dim{0}".format(args.dim)]
     deltas = np.linspace(deltas[0], deltas[1], 100)
     return deltas
-    
 
 # A global dictionary storing the variables passed from the initializer.
 var_dict = {}
@@ -61,27 +60,20 @@ def exp_run(delta_values, temp_a, run, test_points_idx, N_idx, M, dim):
 
 def main(args):
     dim = args.dim
-
-    path = '../data/mnist/mnist_fcnet_feat.hdf5'
-    exp_results_path = "../results/mnist/errors/fcnet/2_{}/syn_errors.mat".format(args.model_width)
-    save_path = "../results/mnist/theoretical/fcnet/2_{}/".format(args.model_width)
-    create_path(save_path)
-    save_path = os.path.join(save_path, "mnist_dim_{0}.mat".format(dim))
-
-    data = h5py.File(path, 'r')
-    X_train = np.array(data["{}/0.5/train/features".format(args.model_width)])
-    Y_train = np.array(data["{}/0.5/train/targets".format(args.model_width)]).reshape(-1)
-
-    X_test = np.array(data["{}/0.5/val/features".format(args.model_width)])    
-    Y_test = np.array(data["{}/0.5/val/targets".format(args.model_width)]).reshape(-1)
-
+    args.save_path = "results/"
+    
+    data = h5py.File(args.features_path, 'r')
+    X_train = np.array(data["0.5/train/features"])
+    Y_train = np.array(data["0.5/train/targets"]).reshape(-1)
+    X_test = np.array(data["0.5/val/features"])    
+    Y_test = np.array(data["0.5/val/targets"]).reshape(-1)
     X = np.concatenate((X_train, X_test), axis=0)
 
     log_N_values = np.linspace(-1, 11, 100)
+    th_sampled_N = np.array([0.03125, 0.0625, 0.125, 0.25, 0.5, 0.75, 1.0])
 
-    th_sampled_N = np.array([0.3125, 0.0625, 0.125, 0.25, 0.5, 0.75, 1.0])
-    exp_results = scipy.io.loadmat(exp_results_path)
-    exp_results = np.mean(exp_results['y'], axis=0) / 100
+    exp_results = scipy.io.loadmat(args.exp_results_path)
+    exp_results = np.mean(exp_results['y'], axis=0)
     exp_results = exp_results.reshape(-1, 1)
     exp_results = exp_results[1:, :]
 
@@ -125,21 +117,8 @@ def main(args):
 
         test_data, _ = test_model.sample(M)
 
-        # train_mu = np.mean(X_train, axis=0)
-        # train_sigma = np.diag(np.cov(X_train.T).reshape(dim,dim))
-        # train_sigma = train_sigma/np.linalg.norm(train_sigma)
-        # train_model = multivariate_normal(mean=train_mu, cov=np.diag(train_sigma))
-
-        # test_mu = np.mean(X_test, axis=0)
-        # test_sigma = np.diag(np.cov(X_test.T).reshape(dim,dim))
-        # test_sigma = test_sigma/np.linalg.norm(test_sigma)
-        # test_model = multivariate_normal(mean=test_mu, cov=np.diag(test_sigma))
-
-        # test_data = test_model.rvs(size=(M)).reshape(-1, dim)
-
         for N_idx, log_N in enumerate(log_N_values):
 
-            # a = -(log_N + train_model.logpdf(test_data))
             a = -(log_N + train_model.score_samples(test_data))
             a /= test_data.shape[1]
             a = np.exp(a)
@@ -193,13 +172,13 @@ def main(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Theoretical Results')
     parser.add_argument('--runs', type=int, default=10, help='Runs')
-    parser.add_argument('--dtype', type=str, default='cifar10')
-    parser.add_argument('--mtype', type=str)
-    parser.add_argument('--filters', nargs='+', type=int,
-                        default=[64, 128, 256, 512])
-    parser.add_argument('--num_classes', type=int)
+    parser.add_argument('--exp_results_path', required=True, type=str)
+    parser.add_argument('--features_path', required=True, type=str)
+    parser.add_argument('--mtype', type=str, required=True)
+    parser.add_argument('--dtype', type=str, required=True)
+
     args = parser.parse_args()
-    for args.model_width in [50, 100, 200]:
-        for dim in [2]:
-            args.dim = dim
-            main(args)
+
+    for dim in [1,2,3,4,5]:
+        args.dim = dim
+        main(args)
