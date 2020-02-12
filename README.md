@@ -53,7 +53,7 @@ tqdm (for pretty progress bars)
 --bs: batch size
 --m: momentum
 ```
-An example to train on cifar 10 data with 100% training data on resnet 18 model is as follows:
+Example to train on cifar 10 data with 100% training data on resnet 18 model:
 ```
 python train.py --dtype="cifar10" --train_size=1.0 \
  	--mtype="cifar_resnet18" --ep=500 --ms=123 --opt="sgd" --wd=1e-4 \
@@ -61,7 +61,7 @@ python train.py --dtype="cifar10" --train_size=1.0 \
  	--n="cifar10_resnet18/cifar10_1.0/"
 ```
 ## (Step 3) Testing (train_dnn/train_model)
-An example to test on cifar 10 test data on resnet 18 model is as follows:
+Example to test on cifar 10 test data on resnet 18 model:
 ```
 python test.py --dtype="cifar10" --modeltype="cifar_resnet18" \
 	--bs=128 --cp_dir="checkpoints/cifar10_resnet18/"
@@ -69,19 +69,14 @@ python test.py --dtype="cifar10" --modeltype="cifar_resnet18" \
 The empirical learning curve data will saved in the folder "results/cifar10/"
 
 ## (Step 4) Saving feature maps (train_dnn/train_model)
+Example to save features for cifar 10 data trained on resnet 18 model:
 ```
 python save_feature_map.py --dtype="cifar10" --mtype="cifar_resnet18"
 ```
 
-## Estimating the learning curve (generate_learning_curve)
+## (Step 5) Estimating the learning curve (generate_learning_curve)
 
 
+## Additional experiments
+### Bottleneck (train_dnn/train_bottleneck)
 ## Authors
-
-
-
-## License
-
-
-## Acknowledgments
-
