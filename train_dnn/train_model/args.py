@@ -8,8 +8,6 @@ def get_args(*args):
     parser = argparse.ArgumentParser()
 
     parser.add_argument('--ms', type=int, default=5)
-    parser.add_argument('--n', type=str, default='def')
-
     parser.add_argument('--mtype', type=str, required=True)
 
     parser.add_argument('--dtype', type=str, required=True, help='Data type')
@@ -30,7 +28,7 @@ def get_args(*args):
     args = parser.parse_args(*args)
 
     args.dir = "."
-    args.cp_dir = os.path.join(args.dir, "checkpoints", args.n)
+    args.cp_dir = "{}/checkpoints/{}/{}_{}".format(args.dir,args.dtype,args.mtype,args.train_size)
     
     if args.dtype == 'cifar10':
         args.num_classes = 10

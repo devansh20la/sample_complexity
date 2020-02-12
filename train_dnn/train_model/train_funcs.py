@@ -17,20 +17,20 @@ def get_model(args):
     """
     if 'cifar' in args.mtype:
         if args.mtype == 'cifar_resnet18':
-            model = ResNet18(num_classes=args.num_classes, filters=args.filters)
+            model = ResNet18(num_classes=args.num_classes)
 
         elif args.mtype == 'cifar_resnet50':
             model = ResNet50(num_classes=args.num_classes)
 
         elif args.mtype == 'cifar_vgg16':
-            model = vgg16(filters=args.filters, num_classes=args.num_classes)
+            model = vgg16(num_classes=args.num_classes)
 
     elif 'imagenet' in args.mtype:
         if args.mtype == 'imagenet_resnet50':
             model = resnet50(num_classes=args.num_classes,
                              pretrained=False)
 
-    elif args.mtype == 'udacity':
+    elif args.mtype == 'udacity_cnn':
         model = udacity_cnn()
 
     elif args.mtype == 'fcnet':
@@ -156,7 +156,7 @@ def reg_model_run(phase, loader, model, criterion, optimizer, args):
     for batch_idx, inp_data in enumerate(loader[phase], 1):
 
         inputs = inp_data['img']
-        targets = inp_data['target']
+        targets = inp_data['target'].reshape(-1,1)
 
         if args.use_cuda:
             inputs, targets = inputs.cuda(), targets.cuda()
@@ -165,9 +165,8 @@ def reg_model_run(phase, loader, model, criterion, optimizer, args):
             with torch.set_grad_enabled(True):
                 # compute output
                 outputs = model(inputs)
-                # print(outputs.size(), targets.size())
-                batch_loss = criterion(outputs, targets)
 
+                batch_loss = criterion(outputs, targets)
                 # compute gradient and do SGD step
                 optimizer.zero_grad()
                 batch_loss.backward()
@@ -183,7 +182,7 @@ def reg_model_run(phase, loader, model, criterion, optimizer, args):
 
         loss.update(batch_loss.item(), inputs.size(0))
         batch_err = torch.abs(outputs - targets)
-        batch_err = torch.sum(batch_err > (np.pi / 8)).type(torch.FloatTensor) /inputs.size(0)
+        batch_err = torch.sum(batch_err > 0.2).type(torch.FloatTensor) / inputs.size(0)
         err.update(float(batch_err), inputs.size(0))
 
         if batch_idx % args.print_freq == 0:
@@ -192,7 +191,7 @@ def reg_model_run(phase, loader, model, criterion, optimizer, args):
                             phase, batch_idx, len(loader[phase]),
                             err.count / (time.time() - t), loss.avg, err.avg))
 
-    return loss.avg, err.avg
+    return loss.avg, err.avg, err.avg
 
 def mnist_dsets(args, training):
     """ Function to load mnist data
