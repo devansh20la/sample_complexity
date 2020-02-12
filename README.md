@@ -69,6 +69,9 @@ python test.py --dtype="cifar10" --modeltype="cifar_resnet18" \
 The empirical learning curve data will saved in the folder "results/cifar10/"
 
 ## (Step 4) Saving feature maps (train_dnn/train_model)
+```
+python save_feature_map.py --dtype="cifar10" --mtype="cifar_resnet18"
+```
 
 ## Estimating the learning curve (generate_learning_curve)
 

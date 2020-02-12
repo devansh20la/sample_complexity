@@ -6,7 +6,6 @@
 #
 # VERY IMPORTANT
 #
-#
 import torch
 import torch.nn as nn
 import os
@@ -29,31 +28,17 @@ def create_path(path):
 def main(args):
     hf = h5py.File(args.data_dir + "{}_{}_feat.hdf5".format(args.dtype, args.mtype), 'w')
 
-    for train_size in [0.03125, 0.0625, 0.125, 0.25, 0.5, 0.75, 1.0]:
+    if 'imagenet' in args.dtype:
+        train_size_list = [0.03125, 0.0625, 0.125, 0.25, 0.5, 0.75, 1.0]
+    else:
+        train_size_list = []
+
+    for train_size in train_size_list:
 
         args.train_size = train_size
-        
-        if args.dtype == "cifar10":
-            if args.mtype == "cifar_resnet18":
-                args.cp_dir = "checkpoints/cifar10_resnet18/cifar10_{}/run0/best_model.pth.tar".format(args.train_size)
-            elif args.mtype == "cifar_vgg16":
-                args.cp_dir = "checkpoints/cifar10_vgg16/cifar10_{}/run0/best_model.pth.tar".format(args.train_size)
-        
-        elif args.dtype == "cifar100":
-            if args.mtype == "cifar_resnet18":
-                args.cp_dir = "checkpoints/cifar100_resnet18/cifar_{}/run0/best_model.pth.tar".format(args.train_size)
-            elif args.mtype == "cifar_vgg16":
-                args.cp_dir = "checkpoints/cifar100_vgg16/cifar100_{}/run0/best_model.pth.tar".format(args.train_size)
-        
-        elif args.dtype == "mnist":
-            if args.mtype == "lenet":
-                args.cp_dir = "checkpoints/mnist/lenet/mnist_{}/run0/best_model.pth.tar".format(args.train_size)
-                
-        else:
-            quit()
-            
+        args.cp_dir="{0}/checkpoints/{1}/{2}/{2}_{3}".format(args.dir, args.dtype, args.mtype, args.train_size)
+
         dset_loaders = tf.get_loader(args, training=True)
-        print(args.train_size, len(dset_loaders['train'].dataset))
         model = tf.get_model(args)
 
         if args.use_cuda:
