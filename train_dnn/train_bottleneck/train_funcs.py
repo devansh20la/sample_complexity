@@ -33,14 +33,8 @@ def get_model(args):
     elif args.mtype == 'udacity_cnn':
         model = udacity_cnn()
 
-    elif args.mtype == 'fcnet':
-        if args.model_depth == 1:
-            logger.info("Model depth is 1, width has no purpose here")
-        model = fcnet(args)
-
     elif args.mtype == 'lenet':
         model = LeNet()
-
 
     return model
 
@@ -342,3 +336,81 @@ def udacity_dsets(args, training):
 
     return dsets
 
+# elif 'nvidia' in args.dtype:
+#         transform = {
+#             'train': transforms.Compose([transforms.Resize((32, 32),
+#                                          interpolation=PIL.Image.ANTIALIAS),
+#                                          transforms.ToTensor()]),
+#             'val': transforms.Compose([transforms.Resize((32, 32),
+#                                        interpolation=PIL.Image.ANTIALIAS),
+#                                        transforms.ToTensor()])
+#         }
+
+#         samples, class_vector = make_dataset(root=args.data_dir)
+#         samples_train, samples_test, class_vector_train, \
+#             class_vector_test = train_test_split(samples, class_vector,
+#                                                  test_size=0.20,
+#                                                  random_state=12,
+#                                                  stratify=class_vector)
+
+#         if training is True:
+#             samples_train, samples_val, class_vector_train, \
+#                 class_vector_val = train_test_split(samples_train,
+#                                                     class_vector_train,
+#                                                     test_size=0.20,
+#                                                     random_state=12,
+#                                                     stratify=class_vector_train)
+
+#             if args.data_size < 1.0:
+#                 samples_train, _, class_vector_train, _ \
+#                     = train_test_split(samples_train, class_vector_train,
+#                                        test_size=1 - args.data_size,
+#                                        random_state=12,
+#                                        stratify=class_vector_train)
+#                 dsets = {
+#                     'train': SyntheticDataset(samples=samples_train,
+#                                               transform=transform['train']),
+#                     'val': SyntheticDataset(samples=samples_val,
+#                                             transform=transform['val'])
+#                 }
+#                 sampler = {
+#                     'train': StratifiedSampler(torch.Tensor(class_vector_train), args.bs),
+#                     'val': StratifiedSampler(torch.Tensor(class_vector_val), 64)
+#                 }
+#         else:
+#             dsets = SyntheticDataset(samples=samples_test, transform=transform['val'])
+
+#     elif args.dtype == 'synthetic':
+#         normalize = transforms.Normalize(mean=[0.5], std=[0.5])
+
+#         transform = {
+#             'train': transforms.Compose([normalize]),
+#             'val': transforms.Compose([normalize])
+#         }
+#         data = torch.load(args.data_dir)
+#         X = data['X']
+#         Y = data['Y']
+
+#         X_train, X_test, \
+#             Y_train, Y_test = train_test_split(np.array(X), np.array(Y),
+#                                                test_size=0.20, random_state=12)
+
+#         if args.train_size < 1.0:
+#             X_train, _, \
+#                 Y_train, _ = train_test_split(X_train, Y_train,
+#                                               test_size=1.0 - args.train_size,
+#                                               random_state=12)
+
+#         if training is True:
+#             dsets = {
+#                 'train': SyntheticDataset(samples=(X_train, Y_train),
+#                                           transform=None),
+
+#                 'val': SyntheticDataset(samples=(X_test, Y_test),
+#                                         transform=None)
+#             }
+#         else:
+#             dsets = {
+#                 'test': SyntheticDataset(samples=(X_test, Y_test),
+#                                          transform=None)
+#             }

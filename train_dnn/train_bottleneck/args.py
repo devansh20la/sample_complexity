@@ -2,6 +2,10 @@ import argparse
 import os
 import torch
 
+import argparse
+import os
+import torch
+
 
 def get_args(*args):
 
@@ -23,12 +27,14 @@ def get_args(*args):
     parser.add_argument('--train_size', type=float, default=1.0)
 
     parser.add_argument('--print_freq', type=int, default=50)
+    parser.add_argument('--dim', type=int, default=2)
+    parser.add_argument('--load_cp', type=str)
 
     
     args = parser.parse_args(*args)
 
     args.dir = "."
-    args.cp_dir = "{0}/checkpoints/{1}/{2}/{2}_{3}".format(args.dir, args.dtype, args.mtype, args.train_size)
+    args.cp_dir = "{0}/checkpoints/{1}/{2}/{2}_{3}_dim_{4}".format(args.dir, args.dtype, args.mtype, args.train_size, args.dim)
     
     if args.dtype == 'cifar10':
         args.num_classes = 10
@@ -47,11 +53,11 @@ def get_args(*args):
 
     elif args.dtype == 'mnist':
         args.num_classes = 10
+        args.milestones = None
         args.data_dir = "{}/data/mnist/".format(args.dir)
-        args.milestones = [None]
 
     elif args.dtype == 'udacity':
-        args.num_classes = None
+        args.num_classes = 1
         args.milestones = [70, 120, 150]
         args.data_dir = "{}/data/udacity/".format(args.dir)
 

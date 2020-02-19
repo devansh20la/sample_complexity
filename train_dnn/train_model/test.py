@@ -76,7 +76,8 @@ if __name__ == '__main__':
 
     args = get_args()
     args.use_cuda = torch.cuda.is_available()
-
+    args.cp_dir = "{0}/checkpoints/{1}/{2}/".format(args.dir, args.dtype, args.mtype)
+    print(args.cp_dir)
     if args.dtype == 'cifar100':
         args.save_path = 'results/cifar100/{}_cifar100_errors.mat'.format(args.mtype)
         args.model_names = sorted(glob.glob1(args.cp_dir, '*cifar*'))
@@ -100,11 +101,11 @@ if __name__ == '__main__':
         print(args.model_names)
 
     elif args.dtype == 'mnist':
-        args.model_names = sorted(glob.glob1(args.cp_dir, '*mnist*'))
+        args.model_names = sorted(glob.glob1(args.cp_dir, '*lenet*'))
         args.model_names = [None, *args.model_names]
         print(args.model_names)
         args.save_path = "results/mnist/{}_errors.mat".format(args.mtype)
-        args.rep_times = 1
+        args.rep_times = 5
         args.num_classes = 10
     
     elif args.dtype == 'udacity':
@@ -114,4 +115,6 @@ if __name__ == '__main__':
         args.save_path = "results/udacity/{}_errors.mat".format(args.mtype)
         args.rep_times = 5
 
+    f = args.save_path.split('/')
+    create_path("/".join(f[:-1]))
     main(args)

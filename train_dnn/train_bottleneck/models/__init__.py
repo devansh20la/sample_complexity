@@ -3,3 +3,4 @@ from models.vgg import *
 from models.lenet import *
 from models.resnet50 import *
 from models.udacity import udacity_cnn
+from models.bottleneck import bottleneck
