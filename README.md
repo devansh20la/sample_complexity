@@ -1,4 +1,4 @@
-# Simple and Accurate Approach for Estimating Sample Complexity of Deep Neural Networks
+# A Theoretical-Empirical Approach to Estimating Sample Complexity of DNNs
 The aim of the project is to estimate practical bounds for sample complexity for deep neural networks. 
 
 ## Prerequisites
